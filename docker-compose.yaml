@@ -6,7 +6,7 @@ services:
     environment:
       - MONGO_INITDB_DATABASE=test-app
     volumes:
-      - mongodb:/data/db
+      - mongodb1:/data/db
   mongo-express:
     image: mongo-express
     restart: always
@@ -39,4 +39,4 @@ services:
       - 8080:5173
 
 volumes:
-  mongodb:
+  mongodb1:
