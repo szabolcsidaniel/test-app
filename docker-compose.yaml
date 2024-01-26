@@ -1,0 +1,42 @@
+version: '3.3'
+services:
+  mongo:
+    image: mongo:4
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=test-app
+    volumes:
+      - mongodb:/data/db
+  mongo-express:
+    image: mongo-express
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_BASICAUTH_USERNAME: db
+      ME_CONFIG_BASICAUTH_PASSWORD: db
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
+  backend:
+    image: node:20
+    depends_on:
+       - mongo
+    working_dir: /srv
+    volumes:
+      - ./backend:/srv
+    command: bash -c "npm i && npm run start:dev"
+    ports:
+      - 8081:3000
+  frontend:
+    image: node:20
+    working_dir: /srv
+    volumes:
+      - ./frontend:/srv
+    command: bash -c "npm i && npm run dev"
+    ports:
+      - 8080:5173
+
+volumes:
+  mongodb:
